@@ -1,5 +1,7 @@
 package ru.luxoft.music.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.luxoft.music.models.Song;
@@ -16,11 +18,14 @@ import java.util.UUID;
 @Service
 public class SongService implements AbstractService<Song> {
 
+    private static final Logger log = LoggerFactory.getLogger(SongService.class);
+
     @Autowired
     private AbstractRepository<Song> songRepository;
 
     @Override
     public UUID create(Song song) {
+        log.info("Song is being created by rest request {}", song);
         return songRepository.add(song);
     }
 
@@ -30,8 +35,10 @@ public class SongService implements AbstractService<Song> {
     }
 
     @Override
-    public List<Song> getAll(){
-        return songRepository.getAll();
+    public List<Song> getAll() {
+        List<Song> songs = songRepository.getAll();
+        log.info("Repository contain {} elements", songs.size());
+        return songs;
     }
 
     @Override
@@ -39,7 +46,7 @@ public class SongService implements AbstractService<Song> {
         boolean isAbsent = songRepository.get(song).orElse(null) == null;
         if (!isAbsent)
             songRepository.update(song);
-
+        log.info("Song is absent is {}", isAbsent);
         return isAbsent;
     }
 
@@ -48,7 +55,7 @@ public class SongService implements AbstractService<Song> {
         boolean isAbsent = songRepository.get(song).orElse(null) == null;
         if (!isAbsent)
             songRepository.delete(song);
-
+        log.info("Song is absent is {}", isAbsent);
         return isAbsent;
     }
 }

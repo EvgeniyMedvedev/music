@@ -38,4 +38,9 @@ public class CrudController {
     public UUID createSong(@RequestBody Song song) {
         return songService.create(song);
     }
+
+    @PostMapping("/update")
+    public boolean updateSong(@RequestBody Song song) {
+        return songService.update(song);
+    }
 }

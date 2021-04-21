@@ -25,17 +25,22 @@ public class CrudController {
     private AbstractService<Song> songService;
 
     @GetMapping("/get/{uuid}")
-    public Song getSong(@RequestParam UUID uuid){
+    public Song getSong(@RequestParam UUID uuid) {
         return songService.get(uuid);
     }
 
     @GetMapping("/getAll")
-    public List<Song> getAll(){
+    public List<Song> getAll() {
         return songService.getAll();
     }
 
     @PostMapping("/create")
-    public UUID createSong(@RequestBody Song song){
+    public UUID createSong(@RequestBody Song song) {
         return songService.create(song);
+    }
+
+    @PostMapping("/update")
+    public boolean updateSong(@RequestBody Song song) {
+        return songService.update(song);
     }
 }

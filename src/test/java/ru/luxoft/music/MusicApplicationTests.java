@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import ru.luxoft.music.controller.CrudController;
+import ru.luxoft.music.models.Album;
 import ru.luxoft.music.models.Genre;
 import ru.luxoft.music.models.Singer;
 import ru.luxoft.music.models.Song;
@@ -39,10 +40,12 @@ class MusicApplicationTests {
     void createTest() {
         Song song = new Song();
         Singer singer = new Singer();
-
+        Album album = new Album();
+        album.setAlbumName("unknown");
         singer.setSingerName("System of a Down");
 
         song.setGenre(Genre.ROCK);
+        song.setAlbum(album);
         song.setSinger(singer);
         song.setTitle("Soldier Side");
         song.setReleaseDate(LocalDate.of(2021, 4, 2));

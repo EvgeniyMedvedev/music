@@ -1,5 +1,6 @@
 package ru.luxoft.music.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -17,8 +18,10 @@ import java.util.UUID;
 public class Album {
 
     @Id
+    @Column(name = "album_id")
     private UUID albumId;
 
+    @Column(name = "album_name")
     private String albumName;
 
     @OneToOne(mappedBy = "album")

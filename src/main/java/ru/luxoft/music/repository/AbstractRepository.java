@@ -9,6 +9,8 @@ import java.util.UUID;
 /**
  * AbstractRepository.
  *
+ * @param <T> some entity
+ *
  * @author Evgeniy_Medvedev
  */
 public abstract class AbstractRepository<T> {

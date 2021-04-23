@@ -1,6 +1,9 @@
 package ru.luxoft.music.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.luxoft.music.models.Song;
 import ru.luxoft.music.services.AbstractService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * CrudController.
@@ -20,27 +28,68 @@ import java.util.UUID;
 @RestController
 public class CrudController {
 
-    //run on web, tests, logs, repo
-    @Autowired
-    private AbstractService<Song> songService;
+    private final AbstractService<Song> songService;
 
-    @GetMapping("/get/{uuid}")
-    public Song getSong(@RequestParam UUID uuid) {
-        return songService.get(uuid);
+    private final JmsTemplate producer;
+
+    private final Logger logg = Logger.getLogger(CrudController.class.getName());
+
+    public CrudController(AbstractService<Song> songService, JmsTemplate producer) {
+        this.songService = songService;
+        this.producer = producer;
     }
 
-    @GetMapping("/getAll")
-    public List<Song> getAll() {
-        return songService.getAll();
+    @JmsListener(destination = "java:jms/queue/music/askedBy")
+    @SendTo("java:jms/queue/music/askedBy-answer")
+    public List<Song> getSong(String parameter) {
+        if (parameter.equals("findAll")) {
+            return songService.getAll();
+        }
+        return songService.takeBySomething(parameter);
     }
 
-    @PostMapping("/create")
-    public UUID createSong(@RequestBody Song song) {
+    @JmsListener(destination = "java:jms/queue/music/create")
+    @SendTo("java:jms/queue/music/create-answer")
+    public UUID createSong(Song song) {
+        logg.info("song is being created - " + song);
         return songService.create(song);
     }
 
-    @PostMapping("/update")
-    public boolean updateSong(@RequestBody Song song) {
-        return songService.update(song);
+    @JmsListener(destination = "java:jms/queue/music/update")
+    public void updateSong(Song song) {
+        logg.info(String.format("Song %s is being updated", song));
+        Song taken = songService.takeBySomething(song.getSongId().toString()).get(0);
+        taken.update(song);
+        songService.update(taken);
+    }
+
+    @GetMapping("/sendTest")
+    public void sendTest(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String mode = request.getParameter("mode");
+        String prefix = request.getParameter("prefix");
+
+        if (prefix == null || "".equals(prefix))
+            prefix = "prefix";
+
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String msg;
+        if (mode.equalsIgnoreCase("send")) {
+            out.print("send messages :<br>");
+            for (int i = 4; i > 0; i--) {
+                msg = prefix + " #" + i;
+                out.print("&bull; " + msg + "<br />");
+                String some = String.valueOf(i);
+                producer.convertAndSend("java:jms/queue/music", some);
+            }
+        } else {
+            out.print("receive messages :<br>");
+            for (int i = 10; i > 0; i--) {
+                out.print("&mdash; nothing <br />");
+            }
+
+        }
+        out.close();
     }
 }

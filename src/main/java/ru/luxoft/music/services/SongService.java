@@ -1,14 +1,11 @@
 package ru.luxoft.music.services;
 
-import org.apache.tomcat.util.collections.SynchronizedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.luxoft.music.models.Album;
 import ru.luxoft.music.models.Genre;
 import ru.luxoft.music.models.Song;
-import ru.luxoft.music.repository.AbstractRepository;
 import ru.luxoft.music.repository.SongRepository;
 
 import java.util.List;
@@ -30,7 +27,6 @@ public class SongService implements AbstractService<Song> {
     @Override
     public UUID create(Song song) {
 
-        log.info("Song is being created by rest request {}", song);
         songRepository.save(song);
         return song.getSongId();
     }
@@ -86,5 +82,12 @@ public class SongService implements AbstractService<Song> {
         }
         log.info("Song is absent is {}", isAbsent);
         return isAbsent;
+    }
+
+    @Override
+    public List<Song> takeBySomething(String parameter) {
+        List<Song> songs = songRepository.takeBySomething(parameter);
+        log.info("Songs are being given into queue");
+        return songs;
     }
 }

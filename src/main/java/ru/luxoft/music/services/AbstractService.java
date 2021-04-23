@@ -1,5 +1,7 @@
 package ru.luxoft.music.services;
 
+import ru.luxoft.music.models.Song;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -19,4 +21,6 @@ public interface AbstractService<T> {
     boolean update(T t);
 
     boolean delete(T t);
+
+    List<Song> takeBySomething(String parameter);
 }

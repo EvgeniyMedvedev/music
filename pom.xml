@@ -12,11 +12,16 @@
 	<artifactId>music</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>music</name>
+	<packaging>war</packaging>
 	<description>Tastes of music</description>
+
 	<properties>
 		<java.version>11</java.version>
 		<spring.boot>2.4.3</spring.boot>
+		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+		<version.war.plugin>2.5</version.war.plugin>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -30,15 +35,30 @@
 			<version>${spring.boot}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring.boot}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.19</version>
+		</dependency>
+
 	</dependencies>
-
-
 
 	<build>
 		<plugins>

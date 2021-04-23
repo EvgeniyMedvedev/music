@@ -1,5 +1,11 @@
 package ru.luxoft.music.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import java.util.UUID;
 
 /**
@@ -7,22 +13,22 @@ import java.util.UUID;
  *
  * @author Evgeniy_Medvedev
  */
+@Entity
+@Table(name = "singers")
 public class Singer {
 
+    @Id
+    @Column(name = "singer_id")
     private UUID singerId;
 
-    public Singer(){
-        singerId = UUID.randomUUID();
-    }
+    @OneToOne(mappedBy = "singer")
+    private Song song;
 
+    @Column(name = "singer_name")
     private String singerName;
 
     public UUID getSingerId() {
         return singerId;
-    }
-
-    public void setSingerId(UUID singerId) {
-        this.singerId = singerId;
     }
 
     public String getSingerName() {
@@ -33,11 +39,24 @@ public class Singer {
         this.singerName = singerName;
     }
 
+    public Song getSong() {
+        return song;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
+    }
+
     @Override
     public String toString() {
         return "Singer{" +
                 "singerId=" + singerId +
                 ", singerName='" + singerName + '\'' +
                 '}';
+    }
+
+    @PrePersist
+    public void generateId(){
+        singerId = UUID.randomUUID();
     }
 }

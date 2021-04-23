@@ -1,11 +1,12 @@
 package ru.luxoft.music.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.luxoft.music.models.Singer;
 import ru.luxoft.music.models.Song;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -14,54 +15,23 @@ import java.util.UUID;
  * @author Evgeniy_Medvedev
  */
 @Repository
-public class SongRepository extends AbstractRepository<Song> {
+public interface SongRepository extends JpaRepository<Song, UUID> {
 
-    private final ArrayList<Song> songs;
+    @Query(nativeQuery = true, value = "select s.song_id, s.title, s.release_date, s.album_id, s.singer_id, s.genre " +
+            "from songs s join singers si using(singer_id) where title = :title and si.singer_name = :singer")
+    Song findBySingerNameAndTitle(String singer, String title);
 
-    public SongRepository() {
-        this.songs = new ArrayList<>();
-    }
+    Song findBySinger(Singer singer);
 
-    @Override
-    public UUID add(Song song) {
-        songs.add(song);
-        return song.getSongId();
-    }
+    Song findByTitle(String title);
 
-    @Override
-    public Optional<Song> get(Song song) {
-        return songs.stream().filter(each -> each.equals(song)).findFirst();
-    }
+    @Query(nativeQuery = true, value = "update singers set")
+    void update(Song song);
 
-
-    @Override
-    public List<Song> getAll() {
-        return List.copyOf(songs);
-    }
-
-
-    @Override
-    public Optional<Song> get(UUID uuid) {
-        return songs.stream().filter(each -> each.getSongId().equals(uuid)).findFirst();
-    }
-
-    @Override
-    public Optional<Song> update(Song song) {
-        songs.forEach(each -> {
-            if (each.getSongId().equals(song.getSongId())) {
-                each.update(song);
-            }
-        });
-        return get(song);
-    }
-
-    @Override
-    public void delete(Song song) {
-        songs.remove(song);
-    }
-
-    @Override
-    public void delete(UUID uuid) {
-        songs.remove(get(uuid));
-    }
+    @Query(nativeQuery = true, value =
+            "select s.song_id, s.title, s.release_date, s.album_id, s.singer_id, s.genre , si.singer_name, alb.album_name " +
+            "from songs s join singers si using(singer_id) join albums alb using(album_id)" +
+            "where CONCAT(s.song_id, s.title, s.release_date, s.genre, si.singer_name, alb.album_name)" +
+            "ILIKE CONCAT('%', :parameter, '%')")
+    List<Song> takeBySomething(String parameter);
 }

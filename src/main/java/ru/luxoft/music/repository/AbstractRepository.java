@@ -9,17 +9,19 @@ import java.util.UUID;
 /**
  * AbstractRepository.
  *
+ * @param <T> some entity
+ *
  * @author Evgeniy_Medvedev
  */
 public abstract class AbstractRepository<T> {
 
-    public abstract UUID add(T t);
+    public abstract Song save(T t);
 
-    public abstract Optional<T> get(T t);
+    public abstract Optional<T> findById(T t);
 
     public abstract List<T> getAll();
 
-    public abstract Optional<Song> get(UUID uuid);
+    public abstract Optional<Song> findById(UUID uuid);
 
     public abstract Optional<T> update(T t);
 

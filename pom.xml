@@ -20,6 +20,10 @@
 		<spring.boot>2.4.3</spring.boot>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 		<version.war.plugin>2.5</version.war.plugin>
+		<flyway.user>postgres</flyway.user>
+		<flyway.password>password</flyway.password>
+		<flyway.url>jdbc:postgresql://localhost/musicdb</flyway.url>
+		<flyway.baselineOnMigrate>true</flyway.baselineOnMigrate>
 	</properties>
 
 	<dependencies>
@@ -65,6 +69,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin -->
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<version>7.8.1</version>
 			</plugin>
 		</plugins>
 	</build>

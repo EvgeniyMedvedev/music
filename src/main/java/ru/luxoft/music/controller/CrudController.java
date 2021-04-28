@@ -56,11 +56,17 @@ public class CrudController {
     }
 
     @JmsListener(destination = "java:jms/queue/music/update")
-    public void updateSong(Song song) {
+    @SendTo("java:jms/queue/music/update-answer")
+    public boolean updateSong(Song song) {
         logg.info(String.format("Song %s is being updated", song));
-        Song taken = songService.takeBySomething(song.getSongId().toString()).get(0);
-        taken.update(song);
-        songService.update(taken);
+        return songService.update(song);
+    }
+
+    @JmsListener(destination = "java:jms/queue/music/delete")
+    @SendTo("java:jms/queue/music/delete-answer")
+    public boolean deleteSong(Song song) {
+        logg.info(String.format("Song %s is being deleted", song));
+        return songService.delete(song);
     }
 
     @GetMapping("/sendTest")

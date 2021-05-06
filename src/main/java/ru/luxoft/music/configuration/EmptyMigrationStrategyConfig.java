@@ -1,8 +1,11 @@
 package ru.luxoft.music.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Если мы хотим отключить только автоматическую миграцию Flyway при запуске,
@@ -13,13 +16,15 @@ import org.springframework.context.annotation.Configuration;
  *
  * В этом случае мы можем оставить Flyway включенным и реализовать пустую FlywayMigrationStrategy:
  * */
-//@Configuration
+@Configuration
+@Profile("manual-migration")
 public class EmptyMigrationStrategyConfig {
 
-//    @Bean
-//    public FlywayMigrationStrategy flywayMigrationStrategy() {
-//        return flyway -> {
-//            do nothing
-//        };
-//    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmptyMigrationStrategyConfig.class);
+
+    @Bean
+    public FlywayMigrationStrategy flywayMigrationStrategy() {
+        LOGGER.info("do nothing");
+        return null;
+    }
 }

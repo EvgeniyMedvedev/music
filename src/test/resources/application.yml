@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: test
+
+  activemq:
+    broker-url: vm://localhost?broker.persistent=false
+
+  flyway:
+    enabled: false
+
+  datasource:
+    url: "jdbc:h2:mem:music;DB_CLOSE_DELAY=-1"
+    username: "sa"
+    password: "sa"
+    driver-class-name: org.h2.Driver

@@ -27,8 +27,6 @@ public class Singer {
     @Column(name = "singer_name")
     private String singerName;
 
-    private String info;
-
     public UUID getSingerId() {
         return singerId;
     }

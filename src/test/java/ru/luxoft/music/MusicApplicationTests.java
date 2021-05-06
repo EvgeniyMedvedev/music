@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.jms.core.JmsTemplate;
 import ru.luxoft.music.controller.CrudController;
 import ru.luxoft.music.models.Album;
@@ -19,17 +17,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 class MusicApplicationTests {
-
-    @LocalServerPort
-    private int port;
 
     @Autowired
     private SongRepository songRepository;
-
-    @Autowired
-    private TestRestTemplate testRestTemplate;
 
     @Autowired
     private JmsTemplate template;
@@ -41,6 +33,7 @@ class MusicApplicationTests {
     public void step(){
         songRepository.deleteAll();
     }
+
     @Test
     void contextLoads() {
         assertNotNull(crudController);
@@ -120,9 +113,4 @@ class MusicApplicationTests {
 
         assertNull(songRepository.findById(song.getSongId()).orElse(null));
     }
-
-    private String url() {
-        return "http://localhost:" + port;
-    }
-
 }

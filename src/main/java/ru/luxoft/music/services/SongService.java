@@ -2,9 +2,7 @@ package ru.luxoft.music.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.luxoft.music.models.Genre;
 import ru.luxoft.music.models.Song;
 import ru.luxoft.music.repository.SongRepository;
 
@@ -21,12 +19,14 @@ public class SongService implements AbstractService<Song> {
 
     private static final Logger log = LoggerFactory.getLogger(SongService.class);
 
-    @Autowired
-    private SongRepository songRepository;
+    private final SongRepository songRepository;
+
+    public SongService(SongRepository songRepository) {
+        this.songRepository = songRepository;
+    }
 
     @Override
     public UUID create(Song song) {
-
         songRepository.save(song);
         return song.getSongId();
     }
@@ -45,32 +45,12 @@ public class SongService implements AbstractService<Song> {
 
     @Override
     public boolean update(Song song) {
-        boolean isAbsent;
-        Song founded = null;
-        if (song.getSongId() != null) {
-            founded = songRepository.findBySingerNameAndTitle(song.getSinger().getSingerName(), song.getTitle());
-        } else if (song.getTitle() != null) {
-            founded = songRepository.findByTitle(song.getTitle());
-        }
-
-        isAbsent = founded == null;
+        boolean isAbsent = songRepository.findById(song.getSongId()).isEmpty();
 
         if (!isAbsent) {
-            String title = song.getTitle() != null ? song.getTitle() : founded.getTitle();
-
-            if (founded.getAlbum() != null && song.getAlbum() != null) {
-                founded.getAlbum().setAlbumName(song.getAlbum().getAlbumName());
-            } else {
-                founded.setAlbum(song.getAlbum());
-            }
-
-            Genre genre = song.getGenre() != null ? song.getGenre() : founded.getGenre();
-            founded.setTitle(title);
-            founded.setGenre(genre);
-
             songRepository.save(song);
         }
-        log.info("Song is updated - {}", isAbsent);
+        log.info("Song has been updated - {}", isAbsent);
         return isAbsent;
     }
 
@@ -79,15 +59,14 @@ public class SongService implements AbstractService<Song> {
         boolean isAbsent = songRepository.findById(song.getSongId()).isEmpty();
         if (!isAbsent) {
             songRepository.delete(song);
+            log.info("Song delete");
         }
-        log.info("Song is absent is {}", isAbsent);
+        log.info("Song has been deleted {}", isAbsent);
         return isAbsent;
     }
 
     @Override
     public List<Song> takeBySomething(String parameter) {
-        List<Song> songs = songRepository.takeBySomething(parameter);
-        log.info("Songs are being given into queue");
-        return songs;
+        return songRepository.takeBySomething(parameter);
     }
 }

@@ -23,10 +23,9 @@ public interface SongRepository extends JpaRepository<Song, UUID> {
 
     Song findBySinger(Singer singer);
 
-    Song findByTitle(String title);
+//    Song searchById(UUID uuid);
 
-    @Query(nativeQuery = true, value = "update singers set")
-    void update(Song song);
+    Song findByTitle(String title);
 
     @Query(nativeQuery = true, value =
             "select s.song_id, s.title, s.release_date, s.album_id, s.singer_id, s.genre , si.singer_name, alb.album_name " +

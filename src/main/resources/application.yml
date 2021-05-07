@@ -2,6 +2,11 @@ server:
   port : 9091
 
 spring:
+#  flyway:
+#    baseline-on-migrate: true
+  profiles:
+    active: dev
+
   activemq:
     broker-url: tcp://localhost:61616
     user: admin

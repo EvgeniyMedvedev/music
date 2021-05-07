@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>2.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.luxoft</groupId>
@@ -20,6 +20,10 @@
 		<spring.boot>2.4.3</spring.boot>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 		<version.war.plugin>2.5</version.war.plugin>
+		<flyway.user>postgres</flyway.user>
+		<flyway.password>password</flyway.password>
+		<flyway.url>jdbc:postgresql://localhost/musicdb</flyway.url>
+		<flyway.baselineOnMigrate>true</flyway.baselineOnMigrate>
 	</properties>
 
 	<dependencies>
@@ -32,13 +36,17 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${spring.boot}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>${spring.boot}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -58,6 +66,11 @@
 			<version>42.2.19</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -65,6 +78,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin -->
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<version>7.8.1</version>
 			</plugin>
 		</plugins>
 	</build>
